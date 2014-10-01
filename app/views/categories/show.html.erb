@@ -1,0 +1,7 @@
+<% header = link_to('All Posts', posts_path) + " &raquo; #{@category.name}".html_safe %>
+<%= render 'shared/content_title', title: header  %>
+
+<% @category.posts.each do |post| %>
+  <%= render 'posts/post', post: post %> <!-- as this is under a different directory, will have to specify the top level directory unlike index.html.erb-->
+<% end %>
+
