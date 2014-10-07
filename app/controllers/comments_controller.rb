@@ -1,12 +1,11 @@
 class CommentsController < ApplicationController
-
   before_action :require_user
 
   def create
-    @post = Post.find(params[:post_id])
+    @post = Post.find_by slug: params[:post_id]
     @comment = @post.comments.build(params.require(:comment).permit(:body))
     #this will associate this comment.post foreign key to this post id. Mass assign the permiteed attribute.
-    @comment.creator = current_user
+    @comment.user = current_user
 
     if @comment.save
       flash[:notice] = "Your comment was added."
@@ -17,17 +16,20 @@ class CommentsController < ApplicationController
   end
 
   def vote
-    comment = Comment.find(params[:id])
-    vote = Vote.create(voteable: comment, user: current_user, vote: params[:vote])
+    @comment = Comment.find(params[:id])
+    @vote = Vote.create(voteable: @comment, user: current_user, vote: params[:vote])
 
-    if vote.valid?
-      flash[:notice] = "Your vote was counted."
-    else
-      flash[:error] = "You can only vote on one post once."
+    respond_to do |format|
+      format.html do
+        if @vote.valid?
+          flash[:notice] = "Your vote was counted."
+        else
+          flash[:error] = "You can only vote on one post once."
+        end
+        redirect_to :back
+      end
+      format.js
     end
-
-    redirect_to :back
-
   end
 
 end

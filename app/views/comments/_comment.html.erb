@@ -1,14 +1,13 @@
 <% show_post ||= false %>
 <div class= 'row'>
-
   <div class='span0 well text-center'>
-    <%= link_to vote_post_comment_path(comment.post, comment, vote: true), method: 'post' do %>
+    <%= link_to vote_post_comment_path(comment.post, comment, vote: true), method: 'post', remote: true do %>
     <i class='icon-arrow-up'></i>
     <% end %>
     <br/>
-    <%= comment.total_votes %> votes 
+    <span id="comment_<%=comment.id %>_votes"> <%= comment.total_votes %> votes </span> <!-- span and id needed to identify and tag this portion to be parsed to js -->
     <br/>
-    <%= link_to vote_post_comment_path(comment.post, comment, vote: false), method: 'post' do %>
+    <%= link_to vote_post_comment_path(comment.post, comment, vote: false), method: 'post', remote: true do %>
     <i class='icon-arrow-down'></i>
     <% end %>
   </div>
@@ -19,7 +18,7 @@
     on <%= link_to comment.post.title, post_path(comment.post) %>
     <% end %>
     <br/>
-      <span class='quiet'>by</span> <%= link_to comment.creator.username, user_path(comment.creator) %>
+      <span class='quiet'>by</span> <%= link_to comment.user.username, user_path(comment.user) %>
       <small>at <%= display_datetime(comment.created_at) %></small>
   </div>
 
